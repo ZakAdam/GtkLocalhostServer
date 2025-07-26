@@ -2,9 +2,10 @@ use warp::Filter;
 use std::path::PathBuf;
 use std::thread;
 use async_channel::*;
-use gtk::{glib};
+use gtk::{glib, CssProvider};
 use gtk::prelude::*;
 use gtk::{gio, Application, ApplicationWindow, Button, FileDialog, Builder};
+use gtk::gdk::Display;
 
 mod window;
 use window::Window;
@@ -16,15 +17,29 @@ fn main() -> glib::ExitCode {
 
     gio::resources_register_include!("resources.gresource").expect("Failed to register resources");
 
-    let app = Application::builder().application_id(APP_ID).build();
+    let app = adw::Application::builder().application_id(APP_ID).build();
 
+    app.connect_startup(|_| load_css());
     app.connect_activate(build_ui);
 
     app.run()
 }
 
-fn build_ui(app: &Application) {
+fn load_css() {
+    let provider = CssProvider::new();
+    provider.load_from_string(include_str!("style.css"));
+
+    gtk::style_context_add_provider_for_display(
+        &Display::default().expect("Could not connect to display"),
+        &provider,
+        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION
+    )
+}
+
+fn build_ui(app: &adw::Application) {
     let window = Window::new(app);
+    
+    window.setup_actions(app);
 
     window.present();
 }

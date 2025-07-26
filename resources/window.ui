@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <interface>
+    <menu id="settings-menu">
+        <item>
+            <attribute name="label" translatable="yes">_Preferences</attribute>
+            <attribute name="action">win.open-preferences</attribute>
+        </item>
+    </menu>
     <template class="Localhost_Server" parent="GtkApplicationWindow">
+        <child type="titlebar">
+            <object class="GtkHeaderBar">
+                <child type="end">
+                    <object class="GtkMenuButton">
+                        <property name="icon-name">open-menu-symbolic</property>
+                        <property name="menu-model">settings-menu</property>
+                    </object>
+                </child>
+            </object>
+        </child>
         <property name="width-request">1360</property>
         <property name="height-request">860</property>
         <property name="title">GTK Localhost Server</property>
@@ -19,12 +35,17 @@
                         <property name="margin-bottom">12</property>
                         <property name="margin-start">12</property>
                         <property name="margin-end">12</property>
+
+                        <style>
+                            <class name="suggested-action"/>
+                        </style>
                     </object>
                 </child>
                 <child>
                     <object class="GtkTextView" id="logs_view">
                         <property name="vexpand">true</property>
                         <property name="hexpand">true</property>
+                        <property name="editable">false</property>
                     </object>
                 </child>
             </object>

@@ -37,7 +37,7 @@ impl ObjectSubclass for Window {
 impl ObjectImpl for Window {
     fn constructed(&self) {
         self.parent_constructed();
-
+        
         let (sender, receiver) = async_channel::unbounded();
 
         self.obj().set_channels(sender.clone(), receiver.clone());
