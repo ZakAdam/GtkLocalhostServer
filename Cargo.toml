@@ -1,0 +1,13 @@
+[package]
+name = "gtk-localhost-server"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+gtk = { version = "0.10.0", package = "gtk4", features = ["v4_18"] }
+warp = "0.3.7"
+tokio = { version = "1", features = ["rt-multi-thread"] }
+async-channel = "2.5.0"
+
+[build-dependencies]
+glib-build-tools = "0.21.0"
