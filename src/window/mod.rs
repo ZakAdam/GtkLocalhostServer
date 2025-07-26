@@ -1,13 +1,18 @@
 mod imp;
 
-use adw::gio::ActionEntry;
-use glib::Object;
-use gtk::{gio, glib, Application, ApplicationWindow, Button, FileDialog, Entry, Label, Orientation, Align};
-use async_channel::*;
-use gtk::glib::clone;
-use gtk::prelude::{ActionMapExtManual, BoxExt, ButtonExt, FileExt, GtkWindowExt, TextBufferExt};
-use gtk::subclass::prelude::{ObjectSubclassExt, ObjectSubclassIsExt};
 use crate::run_server;
+use adw::gio::ActionEntry;
+use async_channel::*;
+use glib::Object;
+use gtk::glib::clone;
+use gtk::prelude::{
+    ActionMapExtManual, BoxExt, ButtonExt, EntryExt, FileExt, GtkWindowExt, TextBufferExt,
+};
+use gtk::subclass::prelude::{ObjectSubclassExt, ObjectSubclassIsExt};
+use gtk::{
+    Align, Application, ApplicationWindow, Button, Entry, FileDialog, FontButton, FontDialog,
+    FontDialogButton, Label, Orientation, SpinButton, gio, glib,
+};
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -32,31 +37,38 @@ impl Window {
                 #[weak]
                 app,
                 move |_, _, _| {
-                println!("Open preferences");
-                    let entry = Entry::builder().name("font-size").build();
-                    let label = Label::builder().label("Font size").build();
-                    
+                    println!("Open preferences");
+
+                    let font_dialog = FontDialog::builder().modal(true).build();
+                    let entry = FontDialogButton::builder()
+                        .dialog(&font_dialog)
+                        .name("font-button")
+                        .build();
+                    let label = Label::builder().label("Font").build();
+
                     let gtk_box = gtk::Box::builder()
-                                            .orientation(Orientation::Horizontal)
-                                            .margin_top(12)
-                                            .margin_bottom(12)
-                                            .margin_start(12)
-                                            .margin_end(12)
-                                            .spacing(12)
-                                            .halign(Align::Center)
-                                            .build();
-                    
+                        .orientation(Orientation::Horizontal)
+                        .margin_top(12)
+                        .margin_bottom(12)
+                        .margin_start(12)
+                        .margin_end(12)
+                        .spacing(12)
+                        .halign(Align::Center)
+                        .build();
+
                     gtk_box.append(&label);
                     gtk_box.append(&entry);
 
                     let window = ApplicationWindow::builder()
-                                .application(&app)
-                                .title("Preferences")
-                                .child(&gtk_box)
-                                .build();
+                        .application(&app)
+                        .title("Preferences")
+                        .child(&gtk_box)
+                        .build();
 
-                window.present();
-            })).build();
+                    window.present();
+                }
+            ))
+            .build();
 
         self.add_action_entries([open_preferences_action]);
     }
